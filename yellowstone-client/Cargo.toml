@@ -1,0 +1,26 @@
+[package]
+name = "yellowstone-client"
+version = "0.1.0"
+authors = { workspace = true }
+edition = { workspace = true }
+description = "Yellowstone gRPC Geyser Plugin"
+homepage = { workspace = true }
+repository = { workspace = true }
+license = { workspace = true }
+keywords = { workspace = true }
+publish = { workspace = true }
+
+[[bin]]
+name = "yellowstone-client"
+path = "src/client.rs"
+
+[dependencies]
+clap = { version = "4.3.0", features = ["derive"] }
+tonic = { version = "0.12.1", features = ["tls"] }
+tokio = { workspace = true, features = ["full"] }
+tokio-stream = { workspace = true }
+chrono = { workspace = true }
+futures = { workspace = true }
+prost = "0.13.1"
+prost-types = "0.13.3"
+yellowstone-grpc-proto = "=8.0.0"

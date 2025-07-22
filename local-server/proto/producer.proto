@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package producer;
+
+service TimeProducer {
+  rpc StreamTimes(Empty) returns (stream TimeMessage);
+}
+
+message Empty {}
+
+message TimeMessage {
+  string seconds = 1;
+  int32 nanos = 2;
+}
