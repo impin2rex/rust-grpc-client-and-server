@@ -8,7 +8,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use tonic::{metadata::MetadataValue, transport::Channel, Request};
+use tonic::{metadata::MetadataValue, transport::{Channel, ClientTlsConfig}, Request};
 use yellowstone_grpc_proto::geyser::{
     geyser_client::GeyserClient, CommitmentLevel, SubscribeRequest, SubscribeRequestFilterAccounts,
 };
@@ -27,11 +27,12 @@ struct Args {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
     let channel = Channel::from_shared(args.endpoint.clone())?
+        .tls_config(ClientTlsConfig::new().with_enabled_roots())?
         .connect()
         .await?;
 
     let token = args.x_token.clone();
-let interceptor = move |mut req: Request<()>| {
+    let interceptor = move |mut req: Request<()>| {
         if let Some(t) = &token {
             if let Ok(meta_val) = MetadataValue::from_str(t) {
                 req.metadata_mut().insert("x-token", meta_val);
@@ -68,7 +69,10 @@ let interceptor = move |mut req: Request<()>| {
     };
 
     let request_stream = futures::stream::iter(vec![request]);
-    let mut response_stream = client.subscribe(Request::new(request_stream)).await?.into_inner();
+    let mut response_stream = client
+        .subscribe(Request::new(request_stream))
+        .await?
+        .into_inner();
 
     println!("🔁 Streaming time responses from server...");
 
