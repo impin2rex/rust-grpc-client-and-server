@@ -37,16 +37,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 
                 let latency_ms = now_ms - message_ms;
                 
-                println!("📡 Message latency: {} ms", latency_ms);
-                // println!("🕒 Received: {}", resp.seconds);
+                println!("Message latency: {} ms", latency_ms);
+                // println!("Received: {}", resp.seconds);
                 if last_print.elapsed() >= print_interval {
-                    println!("📊 Messages per second: {}", count);
+                    println!("Messages per second: {}", count);
                     count = 0;
                     last_print = Instant::now();
                 }
             }
             Err(e) => {
-                eprintln!("⚠️ Stream error: {:?}", e);
+                eprintln!("Stream error: {:?}", e);
                 break;
             }
         }
