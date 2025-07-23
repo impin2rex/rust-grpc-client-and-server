@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "yellowstone-client",
+    "shared-proto",
     "local-client",
 		"local-server"
 ]

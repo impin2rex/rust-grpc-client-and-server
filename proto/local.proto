@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package producer;
+package local;
 
 service TimeProducer {
-  rpc StreamTimes(Empty) returns (stream TimeMessage);
+  rpc StreamTimes(stream Empty) returns (stream TimeMessage);
 }
 
 message Empty {}

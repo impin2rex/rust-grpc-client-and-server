@@ -7,8 +7,6 @@ use std::{
     str::FromStr,
     time::{Duration, Instant},
 };
-use tokio::sync::mpsc;
-use tokio_stream::wrappers::ReceiverStream;
 
 use tonic::{metadata::MetadataValue, transport::Channel, Request};
 use yellowstone_grpc_proto::geyser::{
@@ -43,11 +41,6 @@ let interceptor = move |mut req: Request<()>| {
     };
     let mut client = GeyserClient::with_interceptor(channel, interceptor);
 
-    let (tx, rx) = mpsc::channel(1000);
-    let stream = ReceiverStream::new(rx);
-
-    let mut response_stream = client.subscribe(stream).await?.into_inner();
-
     let request = SubscribeRequest {
         slots: HashMap::new(),
         accounts: {
@@ -74,7 +67,8 @@ let interceptor = move |mut req: Request<()>| {
         from_slot: None,
     };
 
-    tx.send(request).await?;
+    let request_stream = futures::stream::iter(vec![request]);
+    let mut response_stream = client.subscribe(Request::new(request_stream)).await?.into_inner();
 
     println!("🔁 Streaming time responses from server...");
 

@@ -1,27 +1,20 @@
 use std::time::{Duration, Instant};
 use chrono::{DateTime, TimeZone, Utc};
-
 use tonic::Request;
 use futures::StreamExt;
+use shared_proto::local;
 
-pub mod producer {
-    tonic::include_proto!("producer");
-}
-
-use producer::{time_producer_client::TimeProducerClient, Empty};
+use local::{time_producer_client::TimeProducerClient, Empty};
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 4)]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Connect to gRPC server
     let mut client = TimeProducerClient::connect("http://[::1]:50051").await?;
 
+    let request_stream = futures::stream::iter(vec![Empty {}]);
 
-
-    // Create the request using the correct Empty type
-    let request = Request::new(Empty {});
-
-    // Start receiving stream
-    let mut stream = client.stream_times(request).await?.into_inner();
+    let mut stream = client.stream_times(Request::new(request_stream))
+        .await?
+        .into_inner();
 
     println!("🔁 Streaming time responses from server...");
 

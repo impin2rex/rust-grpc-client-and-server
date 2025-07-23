@@ -1,5 +1,5 @@
 [package]
-name = "local-server"
+name = "shared-proto"
 version = "0.1.0"
 authors = { workspace = true }
 edition = { workspace = true }
@@ -10,16 +10,10 @@ license = { workspace = true }
 keywords = { workspace = true }
 publish = { workspace = true }
 
-[[bin]]
-name = "local-server"
-path = "src/server.rs"
-
 [dependencies]
-tokio = { workspace = true, features = ["full"] }
-tokio-stream = { workspace = true }
-futures = { workspace = true }
 tonic = { workspace = true }
 prost = "0.12"
-chrono = { workspace = true }
-env_logger = "0.10"
-shared-proto = { path = "../shared-proto" }
+prost-types = "0.14.1"
+
+[build-dependencies]
+tonic-build = "0.11"

@@ -1,14 +1,11 @@
 use chrono::Utc;
 use std::pin::Pin;
-use tonic::{transport::Server, Request, Response, Status};
+use tonic::{transport::Server, Request, Response, Status, Streaming};
 use futures::Stream;
+use shared_proto::local;
 
-pub mod producer {
-    tonic::include_proto!("producer");
-}
-
-use producer::time_producer_server::{TimeProducer, TimeProducerServer};
-use producer::{Empty, TimeMessage};
+use local::time_producer_server::{TimeProducer, TimeProducerServer};
+use local::{Empty, TimeMessage};
 
 #[derive(Default)]
 pub struct MyTimeProducer {}
@@ -19,7 +16,7 @@ impl TimeProducer for MyTimeProducer {
 
     async fn stream_times(
         &self,
-        _request: Request<Empty>,
+        _request: Request<Streaming<Empty>>,
     ) -> Result<Response<Self::StreamTimesStream>, Status> {
         let (tx, rx) = tokio::sync::mpsc::channel(1024);
 
