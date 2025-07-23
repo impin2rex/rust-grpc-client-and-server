@@ -44,7 +44,7 @@ impl TimeProducer for MyTimeProducer {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
-    let addr = "[::1]:50051".parse().unwrap();
+    let addr = "[::1]:50071".parse().unwrap();
     println!("🚀 Streaming infinite time messages on {}", addr);
 
     Server::builder()

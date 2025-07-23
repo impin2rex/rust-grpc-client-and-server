@@ -8,7 +8,7 @@ use local::{time_producer_client::TimeProducerClient, Empty};
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 4)]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut client = TimeProducerClient::connect("http://[::1]:50051").await?;
+    let mut client = TimeProducerClient::connect("http://[::1]:50071").await?;
 
     let request_stream = futures::stream::iter(vec![Empty {}]);
 
